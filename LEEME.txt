@@ -1,0 +1,39 @@
+CÓMO PUBLICARLA E INSTALARLA EN TU ANDROID
+===========================================
+
+Esta carpeta (menu-app) es una app web completa. Contiene:
+  index.html, manifest.json, sw.js, icon-192.png, icon-512.png, icon-maskable-512.png
+
+IMPORTANTE: la parte de "app instalable + sin conexión" SOLO funciona si los
+archivos están servidos por una web con https. Abrir index.html directamente
+desde el móvil NO instala nada (es la limitación que comentamos).
+
+
+OPCIÓN A — Netlify Drop (la más rápida, sin cuenta ni saber nada)
+-----------------------------------------------------------------
+1. En el ordenador, entra en:  https://app.netlify.com/drop
+2. Arrastra la carpeta "menu-app" entera a la zona que indica la web.
+3. En segundos te da un enlace tipo  https://algo-random.netlify.app
+4. Abre ESE enlace en Chrome en tu Android.
+5. Menú de Chrome (⋮, arriba a la derecha) → "Instalar aplicación"
+   (o "Añadir a pantalla de inicio"). Acepta.
+6. Ya tienes el icono en el cajón de apps. Se abre a pantalla completa
+   y funciona sin internet.
+
+
+OPCIÓN B — GitHub Pages (si quieres una URL fija y tuya)
+--------------------------------------------------------
+1. Crea un repositorio en github.com y sube los 6 archivos a la raíz.
+2. Settings → Pages → Source: rama "main", carpeta "/ (root)" → Save.
+3. En 1-2 min te da una URL https://tuusuario.github.io/turepo
+4. Ábrela en Chrome Android e instala igual que en el paso 5 de arriba.
+
+
+NOTAS
+-----
+- Los datos del menú se guardan en el propio móvil (localStorage del navegador).
+  Mientras no borres los datos de navegación del sitio, no se pierden.
+- Si en el futuro cambias algo del código, vuelve a subirlo y en sw.js sube el
+  número de versión (menu-semanal-v1 -> v2) para forzar que se actualice la caché.
+- Es la misma app para todos los miembros de la familia, pero cada móvil guarda
+  SU copia: no se sincronizan entre dispositivos (eso ya requeriría un servidor).

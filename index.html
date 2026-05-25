@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6f4f">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Menú semanal</title>
+<style>
+  :root {
+    --verde: #2f6f4f;
+    --verde-claro: #e6f0ea;
+    --borde: #d9d9d9;
+    --texto: #222;
+    --muted: #666;
+    --bg: #fafafa;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--texto);
+    background: var(--bg); padding-bottom: 24px;
+  }
+
+  /* Cabecera fija */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--verde); color: #fff;
+    padding: env(safe-area-inset-top) 0 0;
+  }
+  .brand { padding: 12px 16px 8px; font-size: 1.1rem; font-weight: 600; }
+  .days { display: flex; gap: 6px; overflow-x: auto; padding: 0 12px 10px; scrollbar-width: none; }
+  .days::-webkit-scrollbar { display: none; }
+  .day {
+    flex: 0 0 auto; min-width: 46px; padding: 8px 4px; border: none; border-radius: 10px;
+    background: rgba(255,255,255,.15); color: #fff; font-size: .8rem; font-weight: 600;
+    cursor: pointer; text-align: center; line-height: 1.2;
+  }
+  .day small { display: block; font-size: .65rem; font-weight: 400; opacity: .85; }
+  .day.activo { background: #fff; color: var(--verde); }
+
+  /* Aviso */
+  .note {
+    background: #fff8e1; border-bottom: 1px solid #e0c060; color: #5a4a10;
+    font-size: .78rem; padding: 8px 16px; cursor: pointer;
+  }
+  .note .full { display: none; }
+  .note.abierto .full { display: inline; }
+  .note.abierto .corto { display: none; }
+
+  main { padding: 12px; max-width: 560px; margin: 0 auto; }
+
+  .slot {
+    background: #fff; border: 1px solid var(--borde); border-radius: 12px;
+    padding: 10px 12px; margin-bottom: 12px;
+  }
+  .slot-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .slot-title { font-weight: 600; font-size: .95rem; color: var(--verde); }
+  .sug-toggle {
+    border: 1px solid var(--verde); background: #fff; color: var(--verde);
+    border-radius: 20px; padding: 5px 12px; font-size: .8rem; cursor: pointer;
+  }
+  .sug-toggle.activo { background: var(--verde); color: #fff; }
+  textarea {
+    width: 100%; border: none; resize: none; font: inherit; font-size: 16px;
+    line-height: 1.4; padding: 2px 0; background: transparent; color: var(--texto);
+    overflow: hidden; min-height: 24px;
+  }
+  textarea:focus { outline: none; }
+  textarea::placeholder { color: #bbb; }
+
+  .chips { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borde); display: none; }
+  .chips.abierto { display: block; }
+  .chip {
+    display: inline-block; background: var(--verde-claro); color: var(--verde);
+    border: 1px solid #c5dccf; border-radius: 16px; padding: 6px 12px; margin: 3px 3px 0 0;
+    font-size: .82rem; cursor: pointer;
+  }
+  .chip:active { background: #d2e6da; }
+
+  .acciones { display: flex; gap: 10px; margin-top: 4px; }
+  .acciones button {
+    flex: 1; padding: 11px; border: 1px solid var(--borde); background: #fff;
+    border-radius: 10px; font-size: .85rem; color: var(--muted); cursor: pointer;
+  }
+
+  .estado {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--verde); color: #fff; padding: 8px 16px; border-radius: 20px;
+    font-size: .8rem; opacity: 0; transition: all .25s; pointer-events: none; z-index: 20;
+  }
+  .estado.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Menú semanal · familia de 4</div>
+  <div class="days" id="days"></div>
+</header>
+
+<div class="note" id="note" onclick="this.classList.toggle('abierto')">
+  <strong>Sin gluten + sin lactosa.</strong>
+  <span class="corto"> Toca para ver el aviso.</span>
+  <span class="full"> Usa siempre versiones <em>certificadas "sin gluten"</em> en avena, harinas, embutidos, salsas y procesados: riesgo de contaminación cruzada. Lácteos sin lactosa.</span>
+</div>
+
+<main id="vista"></main>
+
+<div class="estado" id="estado">Guardado ✓</div>
+
+<script>
+const STORAGE_KEY = "menuSemanalFamilia_v2";
+
+const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const diasCorto = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+const franjas = ["Desayuno","Media mañana","Comida","Merienda","Cena"];
+
+const sugerencias = {
+  "Desayuno": ["Tortilla francesa con tomate","Yogur sin lactosa con fruta y miel","Tostada de pan sin gluten con aguacate","Huevos revueltos con jamón","Batido de bebida sin lactosa con plátano","Gachas de avena sin gluten con bebida sin lactosa","Fruta fresca con frutos secos","Huevos fritos con bacon","Tostadas de jamón serrano con tomate triturado","Tostadas de carpaccio con rúcula y queso parmesano","Huevos cocidos con queso fresco","Empanada de atún","Cereales de maíz","Arepas de jamón de pavo y queso sin lactosa","Sándwiches","Magdalenas","Tostadas con mantequilla y mermelada","Tequeños"],
+  "Media mañana": ["Pieza de fruta","Puñado de almendras","Yogur sin lactosa","Queso sin lactosa con uvas","Mandarinas","Tortitas de maíz","Bastoncitos de zanahoria con hummus","Fruta","Sándwiches","Galletas","Quesitos","Tequeños","Arroz con leche","Quesillo","Natillas","Helado"],
+  "Comida": ["Lentejas estofadas con verduras","Pollo al horno con patatas","Arroz con verduras y huevo","Garbanzos con espinacas","Filete de ternera con ensalada","Merluza al horno con verduras","Pasta sin gluten con tomate y atún","Guiso de pavo con calabaza","Arroz con pollo","Paella","Cocido madrileño","Carne picada con arroz","Arroz tres delicias","Lentejas con chorizo","Caraotas","Pabellón criollo","Guiso de carne de cerdo con patata y zanahoria","Guiso de carne de ternera con patata y zanahoria","Carrilleras al chocolate","Fideuá","Fideos chinos","Ramen","Sushi","Fajitas","Arepas con carne mechada","Arepas reina pepiada","Purrusalda","BBQ","Filete de ternera","Ensalada","Gazpacho","Salmorejo","Pollo al horno","Filetes de pollo","Arroz blanco","Arroz a la cubana","Patata cocida","Verduras a la plancha","Atún con pimientos","Hamburguesas","Perritos"],
+  "Merienda": ["Fruta de temporada","Yogur sin lactosa con cereales sin gluten","Tostada de pan sin gluten con tomate","Frutos secos","Macedonia de frutas","Bizcocho casero sin gluten ni lactosa","Fruta","Sándwiches","Galletas","Quesitos","Tequeños","Arroz con leche","Quesillo","Natillas","Helado"],
+  "Cena": ["Crema de calabacín con bebida sin lactosa","Tortilla de patata","Pescado a la plancha con verduras","Sopa de pollo con arroz","Revuelto de setas y gambas","Pechuga de pollo con puré (bebida sin lactosa)","Ensalada completa con huevo y atún","Arroz con pollo","Paella","Cocido madrileño","Carne picada con arroz","Arroz tres delicias","Lentejas con chorizo","Caraotas","Pabellón criollo","Guiso de carne de cerdo con patata y zanahoria","Guiso de carne de ternera con patata y zanahoria","Carrilleras al chocolate","Fideuá","Fideos chinos","Ramen","Sushi","Fajitas","Arepas con carne mechada","Arepas reina pepiada","Purrusalda","BBQ","Filete de ternera","Ensalada","Gazpacho","Salmorejo","Pollo al horno","Filetes de pollo","Arroz blanco","Arroz a la cubana","Patata cocida","Verduras a la plancha","Atún con pimientos","Hamburguesas","Perritos"]
+};
+
+// ---- Estado y persistencia ----
+let datos = {};
+try { datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) { datos = {}; }
+
+function clave(dia, franja) { return dia + "|" + franja; }
+
+let estadoTimer;
+function guardar() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+    const el = document.getElementById("estado");
+    el.classList.add("visible");
+    clearTimeout(estadoTimer);
+    estadoTimer = setTimeout(() => el.classList.remove("visible"), 1100);
+  } catch (e) { console.warn("No se pudo guardar:", e); }
+}
+
+// Día activo: hoy por defecto (lunes = 0)
+let diaActivo = (new Date().getDay() + 6) % 7;
+
+// ---- Pestañas de días ----
+const cont = document.getElementById("days");
+function pintarDias() {
+  cont.innerHTML = dias.map((d, i) =>
+    `<button class="day ${i === diaActivo ? "activo" : ""}" data-i="${i}">
+       ${diasCorto[i]}<small>día</small>
+     </button>`
+  ).join("");
+  // Etiqueta inferior real (1..7) — sobrescribe el "día" placeholder
+  cont.querySelectorAll(".day").forEach((b, i) => {
+    b.querySelector("small").textContent = i + 1;
+  });
+}
+cont.addEventListener("click", e => {
+  const b = e.target.closest(".day");
+  if (!b) return;
+  diaActivo = +b.dataset.i;
+  pintarDias();
+  pintarVista();
+});
+
+// ---- Vista del día ----
+const vista = document.getElementById("vista");
+function pintarVista() {
+  const dia = dias[diaActivo];
+  vista.innerHTML = franjas.map(f => {
+    const val = datos[clave(dia, f)] || "";
+    const chips = sugerencias[f].map(s => `<span class="chip">${s}</span>`).join("");
+    return `
+      <section class="slot" data-franja="${f}">
+        <div class="slot-head">
+          <span class="slot-title">${f}</span>
+          <button class="sug-toggle" type="button">+ ideas</button>
+        </div>
+        <textarea placeholder="Escribe o toca «+ ideas»…">${val}</textarea>
+        <div class="chips">${chips}</div>
+      </section>`;
+  }).join("") + `
+    <div class="acciones">
+      <button type="button" id="vaciarDia">Vaciar este día</button>
+      <button type="button" onclick="window.print()">Imprimir / PDF</button>
+    </div>`;
+
+  // Ajustar alto de cada textarea al contenido
+  vista.querySelectorAll("textarea").forEach(autoAlto);
+}
+
+function autoAlto(t) {
+  t.style.height = "auto";
+  t.style.height = t.scrollHeight + "px";
+}
+
+// Eventos delegados dentro de la vista
+vista.addEventListener("input", e => {
+  if (e.target.tagName !== "TEXTAREA") return;
+  const f = e.target.closest(".slot").dataset.franja;
+  const k = clave(dias[diaActivo], f);
+  if (e.target.value.trim()) datos[k] = e.target.value; else delete datos[k];
+  autoAlto(e.target);
+  guardar();
+});
+
+vista.addEventListener("click", e => {
+  // Toggle de sugerencias
+  if (e.target.classList.contains("sug-toggle")) {
+    const slot = e.target.closest(".slot");
+    const abierto = slot.querySelector(".chips").classList.toggle("abierto");
+    e.target.classList.toggle("activo", abierto);
+    return;
+  }
+  // Añadir sugerencia al textarea de su slot
+  if (e.target.classList.contains("chip")) {
+    const slot = e.target.closest(".slot");
+    const ta = slot.querySelector("textarea");
+    const txt = e.target.textContent;
+    ta.value = ta.value.trim() ? ta.value + "\n" + txt : txt;
+    datos[clave(dias[diaActivo], slot.dataset.franja)] = ta.value;
+    autoAlto(ta);
+    guardar();
+    return;
+  }
+  // Vaciar día
+  if (e.target.id === "vaciarDia") {
+    if (confirm("¿Vaciar el menú de " + dias[diaActivo] + "?")) {
+      franjas.forEach(f => delete datos[clave(dias[diaActivo], f)]);
+      guardar();
+      pintarVista();
+    }
+  }
+});
+
+pintarDias();
+pintarVista();
+
+// ---- Registro del service worker ----
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(err => console.warn("SW:", err));
+  });
+}
+</script>
+
+</body>
+</html>
