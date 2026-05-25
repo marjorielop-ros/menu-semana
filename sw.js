@@ -1,4 +1,4 @@
-const CACHE = "menu-semanal-v1";
+const CACHE = "menu-semanal-v3";
 const ASSETS = [
   "./index.html",
   "./manifest.json",

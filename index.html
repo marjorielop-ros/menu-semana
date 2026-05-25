@@ -10,88 +10,96 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>Menú semanal</title>
 <style>
-  :root {
-    --verde: #2f6f4f;
-    --verde-claro: #e6f0ea;
-    --borde: #d9d9d9;
-    --texto: #222;
-    --muted: #666;
-    --bg: #fafafa;
+  :root{
+    --verde:#2f6f4f; --verde-claro:#e6f0ea; --borde:#d9d9d9;
+    --texto:#222; --muted:#666; --bg:#fafafa; --rojo:#b3261e;
   }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--texto);
-    background: var(--bg); padding-bottom: 24px;
-  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:system-ui,-apple-system,sans-serif;color:var(--texto);background:var(--bg);padding-bottom:72px;}
 
-  /* Cabecera fija */
-  header {
-    position: sticky; top: 0; z-index: 10;
-    background: var(--verde); color: #fff;
-    padding: env(safe-area-inset-top) 0 0;
-  }
-  .brand { padding: 12px 16px 8px; font-size: 1.1rem; font-weight: 600; }
-  .days { display: flex; gap: 6px; overflow-x: auto; padding: 0 12px 10px; scrollbar-width: none; }
-  .days::-webkit-scrollbar { display: none; }
-  .day {
-    flex: 0 0 auto; min-width: 46px; padding: 8px 4px; border: none; border-radius: 10px;
-    background: rgba(255,255,255,.15); color: #fff; font-size: .8rem; font-weight: 600;
-    cursor: pointer; text-align: center; line-height: 1.2;
-  }
-  .day small { display: block; font-size: .65rem; font-weight: 400; opacity: .85; }
-  .day.activo { background: #fff; color: var(--verde); }
+  header{position:sticky;top:0;z-index:10;background:var(--verde);color:#fff;padding:env(safe-area-inset-top) 0 0;}
+  .brand{padding:12px 16px 8px;font-size:1.05rem;font-weight:600;}
+  .days{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px;scrollbar-width:none;}
+  .days::-webkit-scrollbar{display:none;}
+  .day{flex:0 0 auto;min-width:44px;padding:8px 4px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;font-size:.8rem;font-weight:600;cursor:pointer;text-align:center;}
+  .day.activo{background:#fff;color:var(--verde);}
 
-  /* Aviso */
-  .note {
-    background: #fff8e1; border-bottom: 1px solid #e0c060; color: #5a4a10;
-    font-size: .78rem; padding: 8px 16px; cursor: pointer;
-  }
-  .note .full { display: none; }
-  .note.abierto .full { display: inline; }
-  .note.abierto .corto { display: none; }
+  .note{background:#fff8e1;border-bottom:1px solid #e0c060;color:#5a4a10;font-size:.78rem;padding:8px 16px;cursor:pointer;}
+  .note .full{display:none;} .note.abierto .full{display:inline;} .note.abierto .corto{display:none;}
 
-  main { padding: 12px; max-width: 560px; margin: 0 auto; }
+  main{padding:12px;max-width:600px;margin:0 auto;}
+  .oculto{display:none!important;}
 
-  .slot {
-    background: #fff; border: 1px solid var(--borde); border-radius: 12px;
-    padding: 10px 12px; margin-bottom: 12px;
-  }
-  .slot-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-  .slot-title { font-weight: 600; font-size: .95rem; color: var(--verde); }
-  .sug-toggle {
-    border: 1px solid var(--verde); background: #fff; color: var(--verde);
-    border-radius: 20px; padding: 5px 12px; font-size: .8rem; cursor: pointer;
-  }
-  .sug-toggle.activo { background: var(--verde); color: #fff; }
-  textarea {
-    width: 100%; border: none; resize: none; font: inherit; font-size: 16px;
-    line-height: 1.4; padding: 2px 0; background: transparent; color: var(--texto);
-    overflow: hidden; min-height: 24px;
-  }
-  textarea:focus { outline: none; }
-  textarea::placeholder { color: #bbb; }
+  .slot{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
+  .slot-title{font-weight:600;font-size:.95rem;color:var(--verde);margin-bottom:6px;}
+  .platos{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
+  .plato{display:flex;align-items:center;justify-content:space-between;background:var(--verde-claro);border:1px solid #c5dccf;border-radius:8px;padding:7px 10px;font-size:.88rem;}
+  .plato.txt{background:#f1f1f1;border-color:#ddd;font-style:italic;color:var(--muted);}
+  .plato .x{border:none;background:none;color:var(--rojo);font-size:1.1rem;line-height:1;cursor:pointer;padding:0 2px;}
+  .add{border:1px dashed var(--verde);background:#fff;color:var(--verde);border-radius:8px;padding:8px;width:100%;font-size:.85rem;cursor:pointer;}
 
-  .chips { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borde); display: none; }
-  .chips.abierto { display: block; }
-  .chip {
-    display: inline-block; background: var(--verde-claro); color: var(--verde);
-    border: 1px solid #c5dccf; border-radius: 16px; padding: 6px 12px; margin: 3px 3px 0 0;
-    font-size: .82rem; cursor: pointer;
-  }
-  .chip:active { background: #d2e6da; }
+  /* Bottom nav */
+  nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--borde);z-index:15;padding-bottom:env(safe-area-inset-bottom);}
+  nav button{flex:1;border:none;background:none;padding:11px 0 13px;font-size:.78rem;color:var(--muted);cursor:pointer;}
+  nav button .ic{display:block;font-size:1.2rem;line-height:1.3;}
+  nav button.activo{color:var(--verde);font-weight:600;}
 
-  .acciones { display: flex; gap: 10px; margin-top: 4px; }
-  .acciones button {
-    flex: 1; padding: 11px; border: 1px solid var(--borde); background: #fff;
-    border-radius: 10px; font-size: .85rem; color: var(--muted); cursor: pointer;
-  }
+  /* Sheet (selector de platos) */
+  .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20;display:none;}
+  .sheet-bg.abierto{display:block;}
+  .sheet{position:fixed;left:0;right:0;bottom:0;max-height:82vh;background:#fff;border-radius:16px 16px 0 0;z-index:21;display:none;flex-direction:column;}
+  .sheet.abierto{display:flex;}
+  .sheet h3{margin:0;padding:14px 16px 8px;font-size:1rem;}
+  .sheet .buscar{margin:0 16px 8px;padding:10px;border:1px solid var(--borde);border-radius:10px;font-size:16px;width:calc(100% - 32px);}
+  .sheet .lista{overflow-y:auto;padding:0 16px 16px;}
+  .grupo-tit{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:12px 0 4px;}
+  .opcion{display:block;width:100%;text-align:left;border:1px solid var(--borde);background:#fff;border-radius:8px;padding:9px 11px;margin-bottom:5px;font-size:.88rem;cursor:pointer;}
+  .opcion .badge{font-size:.7rem;color:var(--muted);}
+  .sheet .cerrar{margin:6px 16px 14px;padding:11px;border:none;background:var(--verde);color:#fff;border-radius:10px;font-size:.9rem;cursor:pointer;}
+  .libre{display:flex;gap:6px;margin:10px 16px 0;}
+  .libre input{flex:1;padding:9px;border:1px solid var(--borde);border-radius:8px;font-size:16px;}
+  .libre button{border:none;background:var(--verde-claro);color:var(--verde);border:1px solid #c5dccf;border-radius:8px;padding:0 14px;cursor:pointer;}
 
-  .estado {
-    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--verde); color: #fff; padding: 8px 16px; border-radius: 20px;
-    font-size: .8rem; opacity: 0; transition: all .25s; pointer-events: none; z-index: 20;
+  /* Compra */
+  .seccion{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
+  .seccion h2{font-size:.95rem;color:var(--verde);margin:0 0 8px;}
+  .fila{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;}
+  .fila:last-child{border-bottom:none;}
+  .fila input[type=checkbox]{width:20px;height:20px;flex:0 0 auto;accent-color:var(--verde);}
+  .fila .nom{flex:1;font-size:.9rem;}
+  .fila .cnt{font-size:.72rem;color:var(--muted);}
+  .fila .qty{width:84px;padding:6px;border:1px solid var(--borde);border-radius:6px;font-size:15px;}
+  .fila.tachado .nom{text-decoration:line-through;color:#aaa;}
+  .toggle-compra{display:flex;gap:8px;margin-bottom:12px;}
+  .toggle-compra button{flex:1;padding:10px;border:1px solid var(--verde);background:#fff;color:var(--verde);border-radius:10px;font-size:.85rem;cursor:pointer;}
+  .toggle-compra button.activo{background:var(--verde);color:#fff;}
+  .vacio{color:var(--muted);font-size:.88rem;text-align:center;padding:24px 12px;}
+  .avisobbq{background:#fff8e1;border:1px solid #e0c060;color:#5a4a10;border-radius:8px;padding:8px 10px;font-size:.8rem;margin-bottom:12px;}
+  .acc{padding:11px;border:1px solid var(--borde);background:#fff;border-radius:10px;font-size:.85rem;color:var(--muted);cursor:pointer;width:100%;margin-top:4px;}
+
+  .estado{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--verde);color:#fff;padding:8px 16px;border-radius:20px;font-size:.8rem;opacity:0;transition:all .25s;pointer-events:none;z-index:30;}
+  .estado.visible{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .acc{padding:11px;border:1px solid var(--verde);background:var(--verde);color:#fff;border-radius:10px;font-size:.9rem;cursor:pointer;width:100%;margin-top:8px;}
+
+  /* Tabla de impresión del menú (oculta en pantalla, visible al imprimir) */
+  #print-menu{display:none;}
+  #print-menu table{border-collapse:collapse;width:100%;}
+  #print-menu th,#print-menu td{border:1px solid #999;padding:6px 8px;vertical-align:top;font-size:11px;}
+  #print-menu th{background:#eee;}
+  #print-menu td.franja{background:#f4f4f4;font-weight:bold;white-space:nowrap;}
+  #print-menu .pl{display:block;}
+  #print-menu h1{font-size:16px;margin:0 0 10px;}
+
+  /* Tachado por palabra (lista final) */
+  .palabra{cursor:pointer;flex:1;font-size:.95rem;padding:4px 0;}
+  .fila.tachado .palabra{text-decoration:line-through;color:#aaa;}
+
+  @media print{
+    @page{size:A4 landscape;margin:1cm;}
+    body>*{display:none!important;}
+    #print-menu{display:block!important;}
   }
-  .estado.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -104,149 +112,353 @@
 <div class="note" id="note" onclick="this.classList.toggle('abierto')">
   <strong>Sin gluten + sin lactosa.</strong>
   <span class="corto"> Toca para ver el aviso.</span>
-  <span class="full"> Usa siempre versiones <em>certificadas "sin gluten"</em> en avena, harinas, embutidos, salsas y procesados: riesgo de contaminación cruzada. Lácteos sin lactosa.</span>
+  <span class="full"> Revisa etiquetas y usa versiones certificadas en procesados (contaminación cruzada). Lácteos sin lactosa.</span>
 </div>
 
-<main id="vista"></main>
+<main id="vista-menu"></main>
+<main id="vista-compra" class="oculto"></main>
+
+<nav>
+  <button id="nav-menu" class="activo" onclick="irA('menu')"><span class="ic">🍽️</span>Menú</button>
+  <button id="nav-compra" onclick="irA('compra')"><span class="ic">🛒</span>Compra</button>
+</nav>
+
+<!-- Selector de platos -->
+<div class="sheet-bg" id="sheet-bg" onclick="cerrarSheet()"></div>
+<div class="sheet" id="sheet">
+  <h3 id="sheet-tit">Añadir plato</h3>
+  <input class="buscar" id="buscar" placeholder="Buscar plato…" oninput="pintarOpciones()">
+  <div class="lista" id="opciones"></div>
+  <div class="libre">
+    <input id="libre-input" placeholder="Otro (texto libre, sin ingredientes)">
+    <button onclick="añadirLibre()">Añadir</button>
+  </div>
+  <button class="cerrar" onclick="cerrarSheet()">Listo</button>
+</div>
 
 <div class="estado" id="estado">Guardado ✓</div>
 
+<!-- Tabla del menú para imprimir/exportar PDF (oculta en pantalla) -->
+<div id="print-menu"></div>
+
 <script>
-const STORAGE_KEY = "menuSemanalFamilia_v2";
+/* ---------- DATOS ---------- */
+const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const diasCorto=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+const franjas=["Desayuno","Media mañana","Comida","Merienda","Cena"];
 
-const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const diasCorto = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
-const franjas = ["Desayuno","Media mañana","Comida","Merienda","Cena"];
+// hecho:true => producto que se compra hecho (su ingrediente es él mismo)
+const CATALOGO=[
+  // Desayuno
+  {n:"Tortilla francesa con tomate",g:"Desayuno",ing:["huevo","tomate"]},
+  {n:"Huevos revueltos con jamón",g:"Desayuno",ing:["huevo","jamón cocido"]},
+  {n:"Huevos fritos con bacon",g:"Desayuno",ing:["huevo","bacon"]},
+  {n:"Huevos cocidos con queso fresco",g:"Desayuno",ing:["huevo","queso fresco"]},
+  {n:"Huevos fritos con queso fresco",g:"Desayuno",ing:["huevo","queso fresco"]},
+  {n:"Tostada con aguacate",g:"Desayuno",ing:["pan","aguacate","tomate"]},
+  {n:"Tostadas de jamón serrano con tomate",g:"Desayuno",ing:["pan","jamón serrano","tomate"]},
+  {n:"Tostadas de carpaccio con rúcula y parmesano",g:"Desayuno",ing:["pan","carpaccio de ternera","rúcula","parmesano"]},
+  {n:"Tostadas con mantequilla y mermelada",g:"Desayuno",ing:["pan","mantequilla","mermelada"]},
+  {n:"Arepas de jamón de pavo y queso",g:"Desayuno",ing:["harina de maíz","jamón de pavo","queso"]},
+  {n:"Gachas de avena",g:"Desayuno",ing:["avena","leche"]},
+  {n:"Yogur",g:"Desayuno",hecho:true},
+  {n:"Cereales de maíz",g:"Desayuno",hecho:true},
+  {n:"Magdalenas",g:"Desayuno",hecho:true},
+  // Snacks
+  {n:"Sándwiches",g:"Snacks salados",ing:["pan de molde","jamón cocido","queso"]},
+  {n:"Bastoncitos de zanahoria con hummus",g:"Snacks salados",ing:["zanahoria","hummus"]},
+  {n:"Queso con uvas",g:"Snacks salados",ing:["queso","uvas"]},
+  {n:"Tequeños",g:"Snacks salados",hecho:true},
+  {n:"Empanada de atún",g:"Snacks salados",hecho:true},
+  {n:"Tortitas de maíz",g:"Snacks salados",hecho:true},
+  {n:"Galletas",g:"Snacks salados",hecho:true},
+  {n:"Quesitos",g:"Snacks salados",hecho:true},
+  // Fruta y postres
+  {n:"Macedonia de frutas",g:"Fruta y postres",ing:["fruta variada"]},
+  {n:"Arroz con leche",g:"Fruta y postres",ing:["arroz","leche","azúcar","canela"]},
+  {n:"Quesillo",g:"Fruta y postres",ing:["huevo","leche condensada","leche","azúcar","vainilla"]},
+  {n:"Fruta",g:"Fruta y postres",hecho:true},
+  {n:"Frutos secos",g:"Fruta y postres",hecho:true},
+  {n:"Natillas",g:"Fruta y postres",hecho:true},
+  {n:"Helado",g:"Fruta y postres",hecho:true},
+  {n:"Bizcocho",g:"Fruta y postres",hecho:true},
+  // Legumbres
+  {n:"Lentejas estofadas con chorizo",g:"Legumbres",ing:["lentejas","chorizo","cebolla","zanahoria","patata","tomate","ajo","pimiento","laurel"]},
+  {n:"Garbanzos con espinacas",g:"Legumbres",ing:["garbanzos","espinacas","cebolla","ajo","tomate","pimentón"]},
+  {n:"Caraotas",g:"Legumbres",ing:["caraotas negras","cebolla","pimiento","ajo"]},
+  {n:"Cocido madrileño",g:"Legumbres",ing:["garbanzos","morcillo de ternera","hueso de caña","tocino","chorizo","morcilla","repollo","zanahoria","patata","fideos"]},
+  // Arroces
+  {n:"Arroz blanco",g:"Arroces",ing:["arroz","ajo"]},
+  {n:"Arroz a la cubana",g:"Arroces",ing:["arroz","huevo","tomate","plátano macho"]},
+  {n:"Arroz con pollo",g:"Arroces",ing:["arroz","pollo","cebolla","pimiento","tomate","guisantes","zanahoria","ajo"]},
+  {n:"Arroz con verduras",g:"Arroces",ing:["arroz","pimiento","zanahoria","guisantes","judía verde","cebolla"]},
+  {n:"Arroz tres delicias",g:"Arroces",ing:["arroz","huevo","guisantes","zanahoria","jamón cocido","gambas"]},
+  {n:"Paella",g:"Arroces",ing:["arroz","pollo","judía verde","tomate","pimiento","azafrán","garrofó"]},
+  {n:"Pabellón criollo",g:"Arroces",ing:["arroz","vacío o falda de ternera","pimiento","cebolla","ajo","mostaza","laurel","caraotas negras","plátano maduro"]},
+  // Pasta y fideos
+  {n:"Pasta con tomate y atún",g:"Pasta y fideos",ing:["pasta","tomate","ajo","atún","cebolla"]},
+  {n:"Fideuá",g:"Pasta y fideos",ing:["fideos","gambas","calamar","tomate","pimiento","azafrán","caldo de pescado"]},
+  {n:"Fideos chinos",g:"Pasta y fideos",ing:["fideos","pimiento","zanahoria","cebolleta","brotes de soja","pollo","salsa de soja"]},
+  {n:"Ramen",g:"Pasta y fideos",ing:["fideos ramen","caldo","huevo","pollo","cebolleta","alga nori","setas"]},
+  {n:"Pizza",g:"Pasta y fideos",hecho:true},
+  // Carnes
+  {n:"Filete de ternera",g:"Carnes",ing:["filete de ternera"]},
+  {n:"Carne picada",g:"Carnes",ing:["carne picada","cebolla","tomate","pimiento","ajo"]},
+  {n:"Carne mechada",g:"Carnes",ing:["vacío o falda de ternera","pimiento","cebolla","ajo","mostaza","laurel"]},
+  {n:"Pollo mechado",g:"Carnes",ing:["pechuga de pollo","cebolla","pimiento","tomate","ajo"]},
+  {n:"Filetes de pollo",g:"Carnes",ing:["filete de pechuga de pollo"]},
+  {n:"Pollo al horno",g:"Carnes",ing:["pollo","patata","cebolla"]},
+  {n:"Guiso de carne con patata y zanahoria",g:"Carnes",ing:["carne de guisar","patata","zanahoria","cebolla","tomate","guisantes","pimiento"]},
+  {n:"Carrilleras al chocolate",g:"Carnes",ing:["carrilleras","cebolla","zanahoria","puerro","cacao puro","vino tinto"]},
+  {n:"Hamburguesas",g:"Carnes",ing:["carne de hamburguesa","pan de hamburguesa","lechuga","tomate","cebolla","queso"]},
+  {n:"Perritos",g:"Carnes",ing:["salchichas","pan de perrito","cebolla"]},
+  {n:"Fajitas",g:"Carnes",ing:["tortillas de trigo","pollo o ternera","pimiento","cebolla"]},
+  {n:"Arepas con carne mechada",g:"Carnes",ing:["harina de maíz","vacío o falda de ternera","pimiento","cebolla","ajo","mostaza","laurel"]},
+  {n:"Arepas reina pepiada",g:"Carnes",ing:["harina de maíz","pollo","aguacate","mayonesa"]},
+  {n:"BBQ",g:"Carnes",ing:[]},
+  // Pescado
+  {n:"Merluza al horno con verduras",g:"Pescado y marisco",ing:["merluza","patata","cebolla","pimiento","tomate"]},
+  {n:"Pescado a la plancha con verduras",g:"Pescado y marisco",ing:["pescado blanco","calabacín","pimiento","cebolla"]},
+  {n:"Atún con pimientos",g:"Pescado y marisco",ing:["atún","pimiento","cebolla","tomate"]},
+  {n:"Revuelto de setas y gambas",g:"Pescado y marisco",ing:["huevo","setas","gambas","ajo"]},
+  {n:"Sushi",g:"Pescado y marisco",hecho:true},
+  // Verduras y sopas
+  {n:"Ensalada mixta",g:"Verduras, sopas y tortilla",ing:["lechuga","tomate","cebolla","maíz","zanahoria","aceitunas"]},
+  {n:"Ensalada de huevo, atún y pimientos",g:"Verduras, sopas y tortilla",ing:["huevo","atún","pimiento"]},
+  {n:"Verduras a la plancha",g:"Verduras, sopas y tortilla",ing:["calabacín","berenjena","pimiento","cebolla","espárragos"]},
+  {n:"Patata cocida",g:"Verduras, sopas y tortilla",ing:["patata"]},
+  {n:"Crema de calabacín",g:"Verduras, sopas y tortilla",ing:["calabacín","cebolla","patata","caldo de verduras"]},
+  {n:"Purrusalda",g:"Verduras, sopas y tortilla",ing:["puerro","patata","zanahoria"]},
+  {n:"Gazpacho",g:"Verduras, sopas y tortilla",ing:["tomate","pepino","pimiento","cebolla","ajo","pan"]},
+  {n:"Salmorejo",g:"Verduras, sopas y tortilla",ing:["tomate","pan","ajo","huevo","jamón"]},
+  {n:"Sopa de pollo con arroz",g:"Verduras, sopas y tortilla",ing:["pollo","arroz","zanahoria","puerro","apio","cebolla"]},
+  {n:"Tortilla de patata",g:"Verduras, sopas y tortilla",ing:["huevo","patata","cebolla"]},
+  {n:"Judías verdes con patatas",g:"Verduras, sopas y tortilla",ing:["judía verde","patata","ajo"]},
+  {n:"Guisantes con jamón",g:"Verduras, sopas y tortilla",ing:["guisantes","jamón serrano","cebolla"]},
+  {n:"Chupe de pollo",g:"Verduras, sopas y tortilla",ing:["pollo","patata","maíz","queso","cebolla","leche"]},
+  {n:"Cachapa",g:"Verduras, sopas y tortilla",ing:["maíz dulce","queso","leche"]}
+];
 
-const sugerencias = {
-  "Desayuno": ["Tortilla francesa con tomate","Yogur sin lactosa con fruta y miel","Tostada de pan sin gluten con aguacate","Huevos revueltos con jamón","Batido de bebida sin lactosa con plátano","Gachas de avena sin gluten con bebida sin lactosa","Fruta fresca con frutos secos","Huevos fritos con bacon","Tostadas de jamón serrano con tomate triturado","Tostadas de carpaccio con rúcula y queso parmesano","Huevos cocidos con queso fresco","Empanada de atún","Cereales de maíz","Arepas de jamón de pavo y queso sin lactosa","Sándwiches","Magdalenas","Tostadas con mantequilla y mermelada","Tequeños"],
-  "Media mañana": ["Pieza de fruta","Puñado de almendras","Yogur sin lactosa","Queso sin lactosa con uvas","Mandarinas","Tortitas de maíz","Bastoncitos de zanahoria con hummus","Fruta","Sándwiches","Galletas","Quesitos","Tequeños","Arroz con leche","Quesillo","Natillas","Helado"],
-  "Comida": ["Lentejas estofadas con verduras","Pollo al horno con patatas","Arroz con verduras y huevo","Garbanzos con espinacas","Filete de ternera con ensalada","Merluza al horno con verduras","Pasta sin gluten con tomate y atún","Guiso de pavo con calabaza","Arroz con pollo","Paella","Cocido madrileño","Carne picada con arroz","Arroz tres delicias","Lentejas con chorizo","Caraotas","Pabellón criollo","Guiso de carne de cerdo con patata y zanahoria","Guiso de carne de ternera con patata y zanahoria","Carrilleras al chocolate","Fideuá","Fideos chinos","Ramen","Sushi","Fajitas","Arepas con carne mechada","Arepas reina pepiada","Purrusalda","BBQ","Filete de ternera","Ensalada","Gazpacho","Salmorejo","Pollo al horno","Filetes de pollo","Arroz blanco","Arroz a la cubana","Patata cocida","Verduras a la plancha","Atún con pimientos","Hamburguesas","Perritos"],
-  "Merienda": ["Fruta de temporada","Yogur sin lactosa con cereales sin gluten","Tostada de pan sin gluten con tomate","Frutos secos","Macedonia de frutas","Bizcocho casero sin gluten ni lactosa","Fruta","Sándwiches","Galletas","Quesitos","Tequeños","Arroz con leche","Quesillo","Natillas","Helado"],
-  "Cena": ["Crema de calabacín con bebida sin lactosa","Tortilla de patata","Pescado a la plancha con verduras","Sopa de pollo con arroz","Revuelto de setas y gambas","Pechuga de pollo con puré (bebida sin lactosa)","Ensalada completa con huevo y atún","Arroz con pollo","Paella","Cocido madrileño","Carne picada con arroz","Arroz tres delicias","Lentejas con chorizo","Caraotas","Pabellón criollo","Guiso de carne de cerdo con patata y zanahoria","Guiso de carne de ternera con patata y zanahoria","Carrilleras al chocolate","Fideuá","Fideos chinos","Ramen","Sushi","Fajitas","Arepas con carne mechada","Arepas reina pepiada","Purrusalda","BBQ","Filete de ternera","Ensalada","Gazpacho","Salmorejo","Pollo al horno","Filetes de pollo","Arroz blanco","Arroz a la cubana","Patata cocida","Verduras a la plancha","Atún con pimientos","Hamburguesas","Perritos"]
-};
+const BEBIDAS=["Vino","Cerveza","Cerveza sin gluten","Cava","Tónica","Agua con gas","Leche sin lactosa","Té de manzanilla","Té negro","Té verde","Café"];
+const OTROS_COCINA=["Sal integral","Papelón","Limón","Aceite de oliva","Pimienta","Comino","Cúrcuma","Jengibre","Hierbas provenzales","Orégano"];
+const OTROS_CASA=["Papel higiénico","Servilletas","Detergente ropa","Jabón cuerpo","Champú","Lavavajillas","Pasta de dientes"];
 
-// ---- Estado y persistencia ----
-let datos = {};
-try { datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) { datos = {}; }
+/* ---------- IDs e índice ---------- */
+function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+CATALOGO.forEach(it=>{it.id=slug(it.n); if(it.hecho&&!it.ing)it.ing=[it.n];});
+const byId={}; CATALOGO.forEach(it=>byId[it.id]=it);
+const grupos=[...new Set(CATALOGO.map(it=>it.g))];
 
-function clave(dia, franja) { return dia + "|" + franja; }
+/* ---------- Estado ---------- */
+const K_MENU="menuB_menu_v1", K_COMPRA="menuB_compra_v1";
+let menu={}, compra={qty:{},done:{},incluir:{}};
+try{menu=JSON.parse(localStorage.getItem(K_MENU)||"{}");}catch(e){menu={};}
+try{compra=Object.assign({qty:{},done:{},incluir:{}},JSON.parse(localStorage.getItem(K_COMPRA)||"{}"));}catch(e){}
 
-let estadoTimer;
-function guardar() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
-    const el = document.getElementById("estado");
-    el.classList.add("visible");
-    clearTimeout(estadoTimer);
-    estadoTimer = setTimeout(() => el.classList.remove("visible"), 1100);
-  } catch (e) { console.warn("No se pudo guardar:", e); }
+let diaActivo=(new Date().getDay()+6)%7;
+let pendiente=null;          // {dia,franja} al que se añaden platos
+let modoCompra="preparar";   // "preparar" | "final"
+
+let tEstado;
+function avisar(){const e=document.getElementById("estado");e.classList.add("visible");clearTimeout(tEstado);tEstado=setTimeout(()=>e.classList.remove("visible"),1000);}
+function guardarMenu(){try{localStorage.setItem(K_MENU,JSON.stringify(menu));avisar();}catch(e){}}
+function guardarCompra(){try{localStorage.setItem(K_COMPRA,JSON.stringify(compra));avisar();}catch(e){}}
+
+/* ---------- Navegación ---------- */
+function irA(v){
+  document.getElementById("vista-menu").classList.toggle("oculto",v!=="menu");
+  document.getElementById("vista-compra").classList.toggle("oculto",v!=="compra");
+  document.getElementById("nav-menu").classList.toggle("activo",v==="menu");
+  document.getElementById("nav-compra").classList.toggle("activo",v==="compra");
+  if(v==="compra")pintarCompra();
 }
 
-// Día activo: hoy por defecto (lunes = 0)
-let diaActivo = (new Date().getDay() + 6) % 7;
+/* ---------- MENÚ ---------- */
+const cont=document.getElementById("days");
+function pintarDias(){
+  cont.innerHTML=dias.map((d,i)=>`<button class="day ${i===diaActivo?"activo":""}" data-i="${i}">${diasCorto[i]}</button>`).join("");
+}
+cont.addEventListener("click",e=>{const b=e.target.closest(".day");if(!b)return;diaActivo=+b.dataset.i;pintarDias();pintarMenu();});
 
-// ---- Pestañas de días ----
-const cont = document.getElementById("days");
-function pintarDias() {
-  cont.innerHTML = dias.map((d, i) =>
-    `<button class="day ${i === diaActivo ? "activo" : ""}" data-i="${i}">
-       ${diasCorto[i]}<small>día</small>
-     </button>`
-  ).join("");
-  // Etiqueta inferior real (1..7) — sobrescribe el "día" placeholder
-  cont.querySelectorAll(".day").forEach((b, i) => {
-    b.querySelector("small").textContent = i + 1;
+const vistaMenu=document.getElementById("vista-menu");
+function entradasDe(dia,franja){return (menu[dia]&&menu[dia][franja])||[];}
+function pintarMenu(){
+  const dia=dias[diaActivo];
+  vistaMenu.innerHTML=franjas.map(f=>{
+    const ent=entradasDe(dia,f);
+    const filas=ent.map((e,idx)=>{
+      if(e.startsWith("txt:")) return `<div class="plato txt"><span>${e.slice(4)}</span><button class="x" data-f="${f}" data-idx="${idx}">×</button></div>`;
+      const it=byId[e]; const nom=it?it.n:e;
+      return `<div class="plato"><span>${nom}</span><button class="x" data-f="${f}" data-idx="${idx}">×</button></div>`;
+    }).join("");
+    return `<section class="slot">
+      <div class="slot-title">${f}</div>
+      <div class="platos">${filas}</div>
+      <button class="add" data-f="${f}">+ añadir plato</button>
+    </section>`;
+  }).join("") + `<button class="acc" id="exportar">Exportar menú semanal (PDF)</button>`;
+}
+
+// Construye la tabla de los 7 días y lanza la exportación/impresión
+function exportarMenu(){
+  const txt=e=>e.startsWith("txt:")?e.slice(4):(byId[e]?byId[e].n:e);
+  const filas=franjas.map(f=>{
+    const celdas=dias.map(d=>{
+      const ent=entradasDe(d,f).map(e=>`<span class="pl">${txt(e)}</span>`).join("");
+      return `<td>${ent}</td>`;
+    }).join("");
+    return `<tr><td class="franja">${f}</td>${celdas}</tr>`;
+  }).join("");
+  document.getElementById("print-menu").innerHTML=
+    `<h1>Menú semanal · familia de 4</h1>
+     <table><tr><th></th>${dias.map(d=>`<th>${d}</th>`).join("")}</tr>${filas}</table>`;
+  window.print();
+}
+vistaMenu.addEventListener("click",e=>{
+  if(e.target.id==="exportar"){exportarMenu();return;}
+  const add=e.target.closest(".add");
+  if(add){abrirSheet(add.dataset.f);return;}
+  const x=e.target.closest(".x");
+  if(x){
+    const dia=dias[diaActivo], f=x.dataset.f, idx=+x.dataset.idx;
+    menu[dia][f].splice(idx,1); guardarMenu(); pintarMenu();
+  }
+});
+
+/* ---------- Sheet selector ---------- */
+function abrirSheet(franja){
+  pendiente={dia:dias[diaActivo],franja};
+  document.getElementById("sheet-tit").textContent="Añadir a "+franja+" · "+dias[diaActivo];
+  document.getElementById("buscar").value="";
+  document.getElementById("libre-input").value="";
+  pintarOpciones();
+  document.getElementById("sheet-bg").classList.add("abierto");
+  document.getElementById("sheet").classList.add("abierto");
+}
+function cerrarSheet(){
+  document.getElementById("sheet-bg").classList.remove("abierto");
+  document.getElementById("sheet").classList.remove("abierto");
+  pendiente=null;
+}
+function pintarOpciones(){
+  const q=slug(document.getElementById("buscar").value);
+  const cajon=document.getElementById("opciones");
+  let html="";
+  grupos.forEach(g=>{
+    const items=CATALOGO.filter(it=>it.g===g && (!q || it.id.includes(q)));
+    if(!items.length)return;
+    html+=`<div class="grupo-tit">${g}</div>`;
+    html+=items.map(it=>`<button class="opcion" data-id="${it.id}">${it.n} ${it.hecho?'<span class="badge">· hecho</span>':''}</button>`).join("");
   });
+  cajon.innerHTML=html||`<div class="vacio">Sin resultados</div>`;
 }
-cont.addEventListener("click", e => {
-  const b = e.target.closest(".day");
-  if (!b) return;
-  diaActivo = +b.dataset.i;
-  pintarDias();
-  pintarVista();
+document.getElementById("opciones").addEventListener("click",e=>{
+  const b=e.target.closest(".opcion"); if(!b||!pendiente)return;
+  añadirEntrada(b.dataset.id);
 });
-
-// ---- Vista del día ----
-const vista = document.getElementById("vista");
-function pintarVista() {
-  const dia = dias[diaActivo];
-  vista.innerHTML = franjas.map(f => {
-    const val = datos[clave(dia, f)] || "";
-    const chips = sugerencias[f].map(s => `<span class="chip">${s}</span>`).join("");
-    return `
-      <section class="slot" data-franja="${f}">
-        <div class="slot-head">
-          <span class="slot-title">${f}</span>
-          <button class="sug-toggle" type="button">+ ideas</button>
-        </div>
-        <textarea placeholder="Escribe o toca «+ ideas»…">${val}</textarea>
-        <div class="chips">${chips}</div>
-      </section>`;
-  }).join("") + `
-    <div class="acciones">
-      <button type="button" id="vaciarDia">Vaciar este día</button>
-      <button type="button" onclick="window.print()">Imprimir / PDF</button>
-    </div>`;
-
-  // Ajustar alto de cada textarea al contenido
-  vista.querySelectorAll("textarea").forEach(autoAlto);
+function añadirEntrada(val){
+  const {dia,franja}=pendiente;
+  if(!menu[dia])menu[dia]={};
+  if(!menu[dia][franja])menu[dia][franja]=[];
+  menu[dia][franja].push(val);
+  guardarMenu(); pintarMenu();
+}
+function añadirLibre(){
+  const v=document.getElementById("libre-input").value.trim();
+  if(!v||!pendiente)return;
+  añadirEntrada("txt:"+v);
+  document.getElementById("libre-input").value="";
 }
 
-function autoAlto(t) {
-  t.style.height = "auto";
-  t.style.height = t.scrollHeight + "px";
+/* ---------- COMPRA ---------- */
+function agregar(){
+  const ing=new Map(), prod=new Map(), bbq=new Set();
+  dias.forEach(dia=>franjas.forEach(f=>{
+    entradasDe(dia,f).forEach(e=>{
+      if(e.startsWith("txt:"))return;
+      const it=byId[e]; if(!it)return;
+      if(it.hecho){const k=it.n.toLowerCase();const o=prod.get(k)||{name:it.n,count:0};o.count++;prod.set(k,o);}
+      else if(!it.ing.length){bbq.add(it.n);}
+      else it.ing.forEach(g=>{const k=g.toLowerCase();const o=ing.get(k)||{name:g,count:0};o.count++;ing.set(k,o);});
+    });
+  }));
+  const byName=(a,b)=>a.name.localeCompare(b.name,"es");
+  return {ing:[...ing.values()].sort(byName),prod:[...prod.values()].sort(byName),bbq:[...bbq]};
 }
 
-// Eventos delegados dentro de la vista
-vista.addEventListener("input", e => {
-  if (e.target.tagName !== "TEXTAREA") return;
-  const f = e.target.closest(".slot").dataset.franja;
-  const k = clave(dias[diaActivo], f);
-  if (e.target.value.trim()) datos[k] = e.target.value; else delete datos[k];
-  autoAlto(e.target);
-  guardar();
-});
+const vistaCompra=document.getElementById("vista-compra");
+function filaPreparar(key,name,count,incluible){
+  const qty=compra.qty[key]||"";
+  const cnt=count?`<span class="cnt">en ${count} plato${count>1?"s":""}</span>`:"";
+  const chk=incluible?`<input type="checkbox" data-inc="${key}" ${compra.incluir[key]?"checked":""}>`:"";
+  return `<div class="fila">${chk}<span class="nom">${name}</span>${cnt}
+    <input class="qty" placeholder="cant." data-qty="${key}" value="${qty}"></div>`;
+}
+function filaFinal(key,name){
+  const qty=compra.qty[key]||"";
+  const done=compra.done[key]?"tachado":"";
+  const q=qty?`<span class="cnt">${qty}</span>`:"";
+  return `<div class="fila ${done}"><span class="palabra" data-done="${key}">${name}</span>${q}</div>`;
+}
 
-vista.addEventListener("click", e => {
-  // Toggle de sugerencias
-  if (e.target.classList.contains("sug-toggle")) {
-    const slot = e.target.closest(".slot");
-    const abierto = slot.querySelector(".chips").classList.toggle("abierto");
-    e.target.classList.toggle("activo", abierto);
-    return;
-  }
-  // Añadir sugerencia al textarea de su slot
-  if (e.target.classList.contains("chip")) {
-    const slot = e.target.closest(".slot");
-    const ta = slot.querySelector("textarea");
-    const txt = e.target.textContent;
-    ta.value = ta.value.trim() ? ta.value + "\n" + txt : txt;
-    datos[clave(dias[diaActivo], slot.dataset.franja)] = ta.value;
-    autoAlto(ta);
-    guardar();
-    return;
-  }
-  // Vaciar día
-  if (e.target.id === "vaciarDia") {
-    if (confirm("¿Vaciar el menú de " + dias[diaActivo] + "?")) {
-      franjas.forEach(f => delete datos[clave(dias[diaActivo], f)]);
-      guardar();
-      pintarVista();
+function pintarCompra(){
+  const {ing,prod,bbq}=agregar();
+  const hayMenu=ing.length||prod.length||bbq.length;
+
+  if(modoCompra==="preparar"){
+    let h=`<div class="toggle-compra">
+      <button class="activo" onclick="setModo('preparar')">1 · Preparar</button>
+      <button onclick="setModo('final')">2 · Lista para comprar</button></div>`;
+    if(!hayMenu){
+      h+=`<div class="vacio">Aún no has elegido platos en el menú.<br>Ve a la pestaña <b>Menú</b> y añade algo.</div>`;
+      vistaCompra.innerHTML=h; return;
     }
+    if(bbq.length) h+=`<div class="avisobbq">⚠ <b>${bbq.join(", ")}</b>: sin ingredientes definidos. Añádelos a mano en Bebidas/Otros o dímelos para incluirlos.</div>`;
+    if(ing.length) h+=`<div class="seccion"><h2>Ingredientes del menú</h2>${ing.map(o=>filaPreparar("ing:"+o.name.toLowerCase(),o.name,o.count,false)).join("")}</div>`;
+    if(prod.length) h+=`<div class="seccion"><h2>Productos ya hechos</h2>${prod.map(o=>filaPreparar("prod:"+o.name.toLowerCase(),o.name,o.count,false)).join("")}</div>`;
+    h+=`<div class="seccion"><h2>Bebidas</h2>${BEBIDAS.map(n=>filaPreparar("beb:"+n,n,0,true)).join("")}</div>`;
+    h+=`<div class="seccion"><h2>Otros · cocina</h2>${OTROS_COCINA.map(n=>filaPreparar("coc:"+n,n,0,true)).join("")}</div>`;
+    h+=`<div class="seccion"><h2>Otros · casa</h2>${OTROS_CASA.map(n=>filaPreparar("casa:"+n,n,0,true)).join("")}</div>`;
+    vistaCompra.innerHTML=h;
+  } else {
+    const secFinal=(titulo,items)=>items.length?`<div class="seccion"><h2>${titulo}</h2>${items.map(o=>filaFinal(o.key,o.name)).join("")}</div>`:"";
+    const ingF=ing.map(o=>({key:"ing:"+o.name.toLowerCase(),name:o.name}));
+    const prodF=prod.map(o=>({key:"prod:"+o.name.toLowerCase(),name:o.name}));
+    const bebF=BEBIDAS.filter(n=>compra.incluir["beb:"+n]).map(n=>({key:"beb:"+n,name:n}));
+    const cocF=OTROS_COCINA.filter(n=>compra.incluir["coc:"+n]).map(n=>({key:"coc:"+n,name:n}));
+    const casaF=OTROS_CASA.filter(n=>compra.incluir["casa:"+n]).map(n=>({key:"casa:"+n,name:n}));
+    const vacio=!(ingF.length||prodF.length||bebF.length||cocF.length||casaF.length);
+    let h=`<div class="toggle-compra">
+      <button onclick="setModo('preparar')">1 · Preparar</button>
+      <button class="activo" onclick="setModo('final')">2 · Lista para comprar</button></div>`;
+    if(vacio){
+      h+=`<div class="vacio">Nada que comprar todavía.<br>Elige platos y marca bebidas/otros en el paso 1.</div>`;
+    } else {
+      h+=`<div class="vacio" style="padding:4px 4px 12px">Toca una palabra para tacharla mientras compras.</div>`;
+      h+=secFinal("Ingredientes",ingF)+secFinal("Productos",prodF)+secFinal("Bebidas",bebF)+secFinal("Otros · cocina",cocF)+secFinal("Otros · casa",casaF);
+    }
+    vistaCompra.innerHTML=h;
   }
+}
+function setModo(m){modoCompra=m;pintarCompra();}
+
+vistaCompra.addEventListener("input",e=>{
+  if(e.target.dataset.qty!==undefined){compra.qty[e.target.dataset.qty]=e.target.value;guardarCompra();}
+});
+vistaCompra.addEventListener("change",e=>{
+  if(e.target.dataset.inc!==undefined){compra.incluir[e.target.dataset.inc]=e.target.checked;guardarCompra();}
+});
+vistaCompra.addEventListener("click",e=>{
+  const p=e.target.closest(".palabra"); if(!p)return;
+  const k=p.dataset.done;
+  compra.done[k]=!compra.done[k];
+  p.closest(".fila").classList.toggle("tachado",compra.done[k]);
+  guardarCompra();
 });
 
-pintarDias();
-pintarVista();
-
-// ---- Registro del service worker ----
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(err => console.warn("SW:", err));
-  });
-}
+/* ---------- Init ---------- */
+pintarDias(); pintarMenu();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
 </script>
-
 </body>
 </html>
