@@ -1,4 +1,4 @@
-const CACHE = "menu-semanal-v3";
+const CACHE = "menu-semanal-v5";
 const ASSETS = [
   "./index.html",
   "./manifest.json",
@@ -23,6 +23,22 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  const url = e.request.url;
+  const esFuente = url.includes("fonts.googleapis.com") || url.includes("fonts.gstatic.com");
+
+  if (esFuente) {
+    // Fuentes: cache-first, y se guardan al vuelo la primera vez (para offline)
+    e.respondWith(
+      caches.open(CACHE).then(c =>
+        c.match(e.request).then(hit =>
+          hit || fetch(e.request).then(resp => { c.put(e.request, resp.clone()); return resp; })
+                 .catch(() => hit)
+        )
+      )
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(hit =>
       hit || fetch(e.request).catch(() => caches.match("./index.html"))
